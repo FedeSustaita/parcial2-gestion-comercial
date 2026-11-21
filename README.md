@@ -48,5 +48,7 @@ TypeScript · Next.js (App Router, Route Handlers) · Tailwind CSS · shadcn/ui 
 | `pnpm run db:generate` | Genera una migración a partir de cambios en `db/schema.ts` |
 | `pnpm run db:migrate` | Aplica las migraciones a la base de `DATABASE_URL` |
 | `pnpm run db:seed` | Carga los datos de prueba |
+| `pnpm run db:reset` | Borra la base local y la vuelve a crear con datos de prueba |
+| `pnpm run db:verificar` | Verifica que la existencia de cada producto coincida con sus movimientos |
 | `pnpm run db:studio` | Explorador visual de la base (Drizzle Studio) |
 | `pnpm run typecheck` | Chequeo de tipos de TypeScript |

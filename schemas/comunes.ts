@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+// Mensajes por defecto de Zod en español (cliente y servidor importan este módulo).
+z.config(z.locales.es());
+// Los esquemas estrictos rechazan campos no previstos (p. ej. `existencia` en un PATCH).
+z.config({
+  customError: (issue) =>
+    issue.code === "unrecognized_keys" ? `Campo no permitido: ${issue.keys.join(", ")}.` : undefined,
+});
+
 // Piezas compartidas por todos los esquemas. Estos módulos los usan TANTO el
 // servidor (servicios) como los formularios (cliente): mismas reglas y
 // mismos mensajes en los dos lados (sección 10.4).

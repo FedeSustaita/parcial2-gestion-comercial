@@ -31,7 +31,8 @@ export function Paginador({ page, pageSize, total }: { page: number; pageSize: n
       <span className="text-muted-foreground">
         Mostrando {desde}–{hasta} de {total}
       </span>
-      <div className="flex items-center gap-2">
+      {paginas > 1 && (
+      <div className="flex items-center gap-2 whitespace-nowrap">
         <Button variant="outline" size="sm" asChild={page > 1} disabled={page <= 1}>
           {page > 1 ? (
             <Link href={href(page - 1)}>
@@ -58,6 +59,7 @@ export function Paginador({ page, pageSize, total }: { page: number; pageSize: n
           )}
         </Button>
       </div>
+      )}
     </div>
   );
 }
