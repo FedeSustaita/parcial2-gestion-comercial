@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de gestión comercial — 2º parcial Programación IV
 
-## Getting Started
+> README en construcción: se completa en la Etapa 5 (descripción, integrantes, URL pública y usuarios de prueba).
 
-First, run the development server:
+## Puesta en marcha local
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env
+pnpm run db:migrate
+pnpm run db:seed
+pnpm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+TypeScript · Next.js (App Router, Route Handlers) · Tailwind CSS · shadcn/ui · Chart.js (react-chartjs-2) · Drizzle ORM + drizzle-kit · SQLite (local) / Turso (producción) · Zod · bcryptjs · jose (cookie de sesión firmada) · Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Organización del código (arquitectura en capas, sección 10)
 
-## Learn More
+| Carpeta | Capa | Contenido |
+| --- | --- | --- |
+| `db/` | Acceso a datos | `schema.ts` (tablas), `index.ts` (conexión), `migrations/`, `seed.ts` |
+| `schemas/` | Validación | Esquemas Zod compartidos entre formularios y servidor |
+| `services/` | Servicios | Reglas de negocio, permisos y transacciones (única fuente de reglas) |
+| `app/api/` | Adaptador REST | Route Handlers: exigen sesión, llaman al servicio y responden |
+| `app/` | Interfaz | Páginas (Server Components) y Server Actions |
+| `components/ui/` | Interfaz | Componentes de shadcn/ui |
+| `components/layout/` | Interfaz | Panel lateral, barra superior, primitivas de maquetación |
+| `components/domain/` | Interfaz | Componentes del dominio (venta, factura, cliente…) |
+| `hooks/` | Interfaz | Hook común de formularios |
+| `lib/` | Transversal | `ApiError`, sesión, formatos (moneda, fecha, numeración) |
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Script | Qué hace |
+| --- | --- |
+| `pnpm run dev` | Servidor de desarrollo |
+| `pnpm run db:generate` | Genera una migración a partir de cambios en `db/schema.ts` |
+| `pnpm run db:migrate` | Aplica las migraciones a la base de `DATABASE_URL` |
+| `pnpm run db:seed` | Carga los datos de prueba |
+| `pnpm run db:studio` | Explorador visual de la base (Drizzle Studio) |
+| `pnpm run typecheck` | Chequeo de tipos de TypeScript |
