@@ -9,5 +9,10 @@ const client = createClient({
   authToken: process.env.DATABASE_AUTH_TOKEN || undefined,
 });
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(client, { schema, casing: "snake_case" });
+
 export type DB = typeof db;
+// Transacción o base: los servicios aceptan cualquiera de las dos para
+// poder componerse dentro de una misma transacción (p. ej. moverStock).
+export type Tx = Parameters<Parameters<DB["transaction"]>[0]>[0];
+export type DBoTx = DB | Tx;
