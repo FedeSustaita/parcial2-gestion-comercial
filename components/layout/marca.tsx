@@ -1,7 +1,6 @@
 import { Store } from "lucide-react";
+import { COMERCIO } from "@/lib/comercio";
 import { cn } from "@/lib/utils";
-
-export const NOMBRE_COMERCIO = "Ferretería El Tornillo";
 
 /** Logo + nombre del comercio. */
 export function Marca({ className }: { className?: string }) {
@@ -10,7 +9,7 @@ export function Marca({ className }: { className?: string }) {
       <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
         <Store className="size-4" />
       </span>
-      <span className="truncate">{NOMBRE_COMERCIO}</span>
+      <span className="truncate">{COMERCIO.nombre}</span>
     </div>
   );
 }

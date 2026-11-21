@@ -2,6 +2,7 @@ import "dotenv/config";
 import { db } from "./index";
 import type { UsuarioSesion } from "../services/auth";
 import { crearCategoria } from "../services/categorias";
+import { crearCliente } from "../services/clientes";
 import { crearProducto } from "../services/productos";
 import { crearPrimerAdmin, crearUsuario } from "../services/usuarios";
 
@@ -59,7 +60,11 @@ async function main() {
   }
   console.log(`✓ ${Object.keys(CATALOGO).length} categorías, ${n} productos`);
 
-  // Etapas siguientes: clientes, facturas y pagos.
+  // 10 clientes: 6 con cuenta corriente (algunos con límite de crédito).
+  for (const c of CLIENTES) await crearCliente(actor, c);
+  console.log(`✓ ${CLIENTES.length} clientes`);
+
+  // Etapa 5: 50 facturas en los últimos 30 días y pagos.
   console.log("Seed completo.");
 }
 
@@ -112,3 +117,16 @@ const CATALOGO: Record<string, ItemSeed[]> = {
     ["TO-006", "Tornillo para madera 6x1 1/2\" (x100)", 3800, 10, 7],
   ],
 };
+
+const CLIENTES = [
+  { tipoDoc: "DNI", nroDoc: "28456123", nombre: "Mariana López", domicilio: "Las Heras 455", telefono: "381 455-2210", email: "mariana.lopez@correo.test", cuentaCorriente: true, limiteCredito: 40000000 },
+  { tipoDoc: "CUIT", nroDoc: "30712345671", nombre: "Constructora Del Norte S.A.", domicilio: "Av. Belgrano 2100", telefono: "381 430-1188", email: "compras@delnorte.test", cuentaCorriente: true, limiteCredito: 150000000 },
+  { tipoDoc: "DNI", nroDoc: "33120987", nombre: "Jorge Medina", domicilio: "San Martín 870", telefono: "381 512-3344", cuentaCorriente: true, limiteCredito: 15000000 },
+  { tipoDoc: "DNI", nroDoc: "25987654", nombre: "Silvia Paz", domicilio: "Congreso 230", telefono: "381 467-9012", email: "silvia.paz@correo.test", cuentaCorriente: true },
+  { tipoDoc: "CUIT", nroDoc: "20301234565", nombre: "Ricardo Gómez (Plomero)", domicilio: "Junín 1450", telefono: "381 598-7766", cuentaCorriente: true, limiteCredito: 25000000 },
+  { tipoDoc: "DNI", nroDoc: "40555111", nombre: "Lucía Fernández", domicilio: "Córdoba 640", telefono: "381 600-1122", cuentaCorriente: true, limiteCredito: 8000000 },
+  { tipoDoc: "DNI", nroDoc: "31444777", nombre: "Diego Romero", telefono: "381 455-8899", cuentaCorriente: false },
+  { tipoDoc: "DNI", nroDoc: "36222333", nombre: "Valeria Castro", email: "valeria.castro@correo.test", cuentaCorriente: false },
+  { tipoDoc: "DNI", nroDoc: "29888444", nombre: "Hernán Ibáñez", domicilio: "Maipú 310", cuentaCorriente: false },
+  { tipoDoc: "CUIT", nroDoc: "27350001112", nombre: "Carolina Ruiz Diseño", domicilio: "24 de Septiembre 980", telefono: "381 421-5566", cuentaCorriente: false },
+];

@@ -25,7 +25,7 @@ export function BarraSuperior({ usuario }: { usuario: UsuarioSesion }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
+    <header className="sticky top-0 z-30 flex h-14 print:hidden items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
       {/* En pantallas chicas el panel lateral se colapsa en este menú (sección 8). */}
       <Sheet open={menuAbierto} onOpenChange={setMenuAbierto}>
         <SheetTrigger asChild>
