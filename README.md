@@ -5,13 +5,13 @@
 **Sitio publicado:** https://parcial2-gestion-comercial.vercel.app
 **Repositorio:** https://github.com/FedeSustaita/parcial2-gestion-comercial
 
-## Integrantes
+## Integrantes — Grupo 24
 
 | Nombre | Legajo |
 | --- | --- |
-| _(completar)_ | _(completar)_ |
-| _(completar)_ | _(completar)_ |
-| _(completar)_ | _(completar)_ |
+| Federico Sustaita Fuentes | 63195 |
+| Axel Torres | 63139 |
+| Leonardo Argañaráz | 63358 |
 
 ## Usuarios de prueba
 
