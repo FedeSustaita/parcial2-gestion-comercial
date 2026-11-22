@@ -9,6 +9,7 @@ export function exigirRol(usuario: UsuarioSesion, ...roles: Rol[]): void {
   if (!roles.includes(usuario.rol)) throw errores.sinPermiso();
 }
 
+/** Sección 3: el administrador puede todo (p. ej. ver productos inactivos). */
 export function esAdmin(usuario: UsuarioSesion): boolean {
   return usuario.rol === "admin";
 }

@@ -13,6 +13,7 @@ import { facturas, pagos } from "@/db/schema";
 /** Punto de venta del local. Para pasar a "0002" se cambia solo acá. */
 export const PUNTO_DE_VENTA = 1;
 
+/** Regla 4: próximo número de factura (se llama dentro de la transacción que confirma). */
 export async function siguienteNumeroFactura(tx: DBoTx): Promise<number> {
   const [{ ultimo }] = await tx
     .select({ ultimo: max(facturas.numero) })
@@ -21,6 +22,7 @@ export async function siguienteNumeroFactura(tx: DBoTx): Promise<number> {
   return (ultimo ?? 0) + 1;
 }
 
+/** Regla 4: los recibos de pago tienen su propia numeración correlativa. */
 export async function siguienteNumeroRecibo(tx: DBoTx): Promise<number> {
   const [{ ultimo }] = await tx
     .select({ ultimo: max(pagos.numero) })

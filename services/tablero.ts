@@ -21,6 +21,7 @@ export type Tablero = {
 
 const DIAS = 30;
 
+/** RF-T1 a RF-T3: todo lo que muestra la pantalla de inicio en una sola respuesta. */
 export async function obtenerTablero(_usuario: UsuarioSesion): Promise<Tablero> {
   const hoy = diaAR();
   const primerDia = sumarDias(hoy, -(DIAS - 1));

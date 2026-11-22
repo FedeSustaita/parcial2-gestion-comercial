@@ -6,7 +6,7 @@ import { InsigniaEstadoFactura } from "@/components/comunes/insignias";
 import { Paginador } from "@/components/comunes/paginador";
 import { MarcoTabla } from "@/components/comunes/tabla";
 import { PageHeader } from "@/components/layout/page-header";
-import { Inline, Num, Stack, Text } from "@/components/layout/primitivas";
+import { Inline, Num, Stack, Text, TextoEnLinea } from "@/components/layout/primitivas";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requerirUsuario } from "@/lib/auth";
@@ -106,7 +106,7 @@ export default async function VentasPage({ searchParams }: PageProps<"/ventas">)
                             {f.cliente.nombre}
                           </Link>
                         ) : (
-                          <span className="text-muted-foreground">Consumidor final</span>
+                          <TextoEnLinea variant="muted">Consumidor final</TextoEnLinea>
                         )}
                       </TableCell>
                       <TableCell className="whitespace-nowrap">{f.vendedor.nombre}</TableCell>

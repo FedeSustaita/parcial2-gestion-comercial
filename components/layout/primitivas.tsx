@@ -98,6 +98,23 @@ export function Title({
   );
 }
 
+/** Texto en línea (dentro de una celda o un renglón). */
+export function TextoEnLinea({
+  variant = "default",
+  className,
+  ...props
+}: React.ComponentProps<"span"> & { variant?: "default" | "strong" | "muted" | "small" }) {
+  return (
+    <span
+      className={cn(
+        { default: "", strong: "font-medium", muted: "text-muted-foreground", small: "text-xs text-muted-foreground" }[variant],
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 /** Texto en línea con formato de número (alineación tabular). */
 export function Num({ className, ...props }: React.ComponentProps<"span">) {
   return <span className={cn("tabular-nums", className)} {...props} />;

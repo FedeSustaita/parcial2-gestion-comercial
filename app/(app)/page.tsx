@@ -3,7 +3,7 @@ import Link from "next/link";
 import { EstadoVacio } from "@/components/comunes/estados";
 import { GraficoFormasDePago, GraficoVentasDiarias } from "@/components/domain/tablero/graficos";
 import { PageHeader } from "@/components/layout/page-header";
-import { Grid, Inline, Num, Stack, Text, Title } from "@/components/layout/primitivas";
+import { Grid, Inline, Num, Stack, Text, TextoEnLinea, Title } from "@/components/layout/primitivas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -128,7 +128,7 @@ export default async function InicioPage() {
                       <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                       <TableCell>
                         <Link href={`/productos/${m.productoId}`} className="hover:underline">
-                          <span className="font-medium">{m.codigo}</span> {m.descripcion}
+                          <TextoEnLinea variant="strong">{m.codigo}</TextoEnLinea> {m.descripcion}
                         </Link>
                       </TableCell>
                       <TableCell className="text-right"><Num>{m.unidades}</Num></TableCell>
@@ -168,7 +168,7 @@ export default async function InicioPage() {
                     <TableRow key={p.id}>
                       <TableCell>
                         <Link href={`/productos/${p.id}`} className="hover:underline">
-                          <span className="font-medium">{p.codigo}</span> {p.descripcion}
+                          <TextoEnLinea variant="strong">{p.codigo}</TextoEnLinea> {p.descripcion}
                         </Link>
                       </TableCell>
                       <TableCell className="text-right">

@@ -8,7 +8,7 @@ import { MarcoTabla } from "@/components/comunes/tabla";
 import { DialogoProducto } from "@/components/domain/productos/dialogo-producto";
 import { PestanasProductos } from "@/components/domain/productos/pestanas-productos";
 import { PageHeader } from "@/components/layout/page-header";
-import { Num, Stack } from "@/components/layout/primitivas";
+import { Inline, Num, Stack } from "@/components/layout/primitivas";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requerirUsuario } from "@/lib/auth";
@@ -93,10 +93,10 @@ export default async function ProductosPage({ searchParams }: PageProps<"/produc
                       <Num>{formatearMoneda(p.precio)}</Num>
                     </TableCell>
                     <TableCell className="text-right whitespace-nowrap">
-                      <span className="inline-flex items-center gap-2">
+                      <Inline gap={2} justify="end" wrap={false}>
                         {p.bajoMinimo && <InsigniaBajoMinimo />}
                         <Num className={p.bajoMinimo ? "font-semibold text-amber-700" : ""}>{p.existencia}</Num>
-                      </span>
+                      </Inline>
                     </TableCell>
                     {esAdmin && (
                       <TableCell>

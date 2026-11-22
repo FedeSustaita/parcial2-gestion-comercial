@@ -15,6 +15,7 @@ export type UsuarioSesion = { id: number; nombre: string; email: string; rol: Ro
 
 const COSTO_BCRYPT = 10;
 
+/** Seguridad (sección 8): contraseñas con hash bcrypt, nunca en texto plano. */
 export function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, COSTO_BCRYPT);
 }

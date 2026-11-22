@@ -7,7 +7,7 @@ import { MarcoTabla } from "@/components/comunes/tabla";
 import { AccionesUsuario } from "@/components/domain/usuarios/acciones-usuario";
 import { DialogoUsuario } from "@/components/domain/usuarios/dialogo-usuario";
 import { PageHeader } from "@/components/layout/page-header";
-import { Stack } from "@/components/layout/primitivas";
+import { Stack, TextoEnLinea } from "@/components/layout/primitivas";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requerirAdmin } from "@/lib/auth";
@@ -59,7 +59,7 @@ export default async function UsuariosPage({ searchParams }: PageProps<"/usuario
                   <TableRow key={u.id} className={u.activo ? "" : "opacity-60"}>
                     <TableCell className="font-medium">
                       {u.nombre}
-                      {u.id === usuario.id && <span className="ml-2 text-xs text-muted-foreground">(vos)</span>}
+                      {u.id === usuario.id && <TextoEnLinea variant="small" className="ml-2">(vos)</TextoEnLinea>}
                     </TableCell>
                     <TableCell>{u.email}</TableCell>
                     <TableCell>
