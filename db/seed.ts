@@ -65,7 +65,7 @@ async function main() {
   // servicio que usa la pantalla de Nueva venta), en orden cronológico para
   // que la numeración siga a las fechas. Si una combinación no pasa una regla
   // (sin stock, límite de crédito), se prueba otra: el servicio decide.
-  const usuarios = [actor, { id: 2, nombre: "Pablo Ruiz", email: "vendedor@comercio.test", rol: "vendedor" as const }];
+  const usuarios = [actor, { id: 2, nombre: USUARIOS_DEMO.vendedor.nombre, email: USUARIOS_DEMO.vendedor.email, rol: "vendedor" as const }];
   const conCC = clientes.filter((c) => c.cuentaCorriente);
   const productosIds = Array.from({ length: n }, (_, i) => i + 1);
   const azar = generador(20261122);
@@ -147,58 +147,60 @@ function elegir<T>(azar: () => number, lista: T[]): T {
 
 // [código, descripción, precio en pesos, stock mínimo, stock inicial]
 type ItemSeed = [string, string, number, number, number];
+// Corralón de construcción y hogar: todo se vende por unidad (bolsas, rollos,
+// latas, piezas), así la existencia sigue siendo un número entero.
 const CATALOGO: Record<string, ItemSeed[]> = {
+  "Materiales": [
+    ["MA-001", "Cemento portland bolsa 50 kg", 11800, 10, 60],
+    ["MA-002", "Cal hidráulica bolsa 25 kg", 6400, 10, 45],
+    ["MA-003", "Adhesivo para cerámicos bolsa 30 kg", 9900, 8, 30],
+    ["MA-004", "Ladrillo hueco 12x18x33", 950, 200, 1200],
+    ["MA-005", "Hierro aletado 8 mm x 12 m", 14500, 20, 90],
+    ["MA-006", "Malla sima 15x15 cm 2x6 m", 52000, 4, 3],
+  ],
   Herramientas: [
-    ["HE-001", "Martillo carpintero 500 g", 12500, 5, 24],
-    ["HE-002", "Destornillador Phillips N° 2", 4200, 8, 40],
-    ["HE-003", "Pinza universal 8\"", 9800, 5, 18],
-    ["HE-004", "Llave francesa 10\"", 15600, 4, 12],
-    ["HE-005", "Cinta métrica 5 m", 6900, 6, 30],
-    ["HE-006", "Serrucho 20\"", 18900, 3, 8],
+    ["HE-001", "Pala ancha con mango", 24500, 4, 18],
+    ["HE-002", "Cuchara de albañil N° 8", 7800, 6, 25],
+    ["HE-003", "Nivel de aluminio 60 cm", 15600, 4, 12],
+    ["HE-004", "Carretilla 70 L rueda neumática", 98000, 2, 6],
+    ["HE-005", "Amoladora angular 115 mm 850 W", 89000, 2, 5],
+    ["HE-006", "Disco de corte para metal 115 mm", 2100, 20, 14],
   ],
   Electricidad: [
-    ["EL-001", "Cinta aisladora 20 m", 1900, 15, 80],
-    ["EL-002", "Lámpara LED 12 W", 3200, 20, 90],
-    ["EL-003", "Toma corriente doble", 4800, 10, 35],
-    ["EL-004", "Interruptor de luz simple", 3500, 10, 40],
-    ["EL-005", "Cable unipolar 2,5 mm (metro)", 1150, 50, 300],
-    ["EL-006", "Zapatilla 5 tomas con fusible", 14500, 5, 3],
+    ["EL-001", "Cable unipolar 2,5 mm rollo 100 m", 68000, 3, 10],
+    ["EL-002", "Foco LED 9 W E27 luz fría", 2600, 20, 90],
+    ["EL-003", "Llave térmica bipolar 2x20 A", 18500, 4, 12],
+    ["EL-004", "Disyuntor diferencial 2x40 A", 52000, 2, 4],
+    ["EL-005", "Toma doble con tierra", 4800, 10, 40],
+    ["EL-006", "Caja de luz rectangular 5x10", 750, 30, 25],
   ],
-  "Plomería": [
-    ["PL-001", "Cinta de teflón 1/2\"", 900, 20, 120],
-    ["PL-002", "Canilla de bronce 1/2\"", 16800, 4, 10],
-    ["PL-003", "Codo PVC 90° 40 mm", 1250, 20, 60],
-    ["PL-004", "Sellador de silicona 280 ml", 5600, 8, 25],
-    ["PL-005", "Flexible de agua 40 cm", 3900, 10, 6],
-    ["PL-006", "Llave de paso 3/4\"", 11200, 4, 9],
+  Sanitarios: [
+    ["SA-001", "Caño termofusión 20 mm x 4 m", 5200, 15, 70],
+    ["SA-002", "Codo termofusión 20 mm", 450, 50, 300],
+    ["SA-003", "Llave de paso esférica 3/4\"", 11200, 4, 15],
+    ["SA-004", "Grifería monocomando para cocina", 78000, 2, 6],
+    ["SA-005", "Inodoro con mochila", 185000, 1, 3],
+    ["SA-006", "Sellador siliconado sanitario 280 ml", 6100, 8, 6],
   ],
-  Pinturas: [
-    ["PI-001", "Látex interior blanco 4 L", 32500, 4, 14],
-    ["PI-002", "Esmalte sintético negro 1 L", 15800, 4, 12],
-    ["PI-003", "Pincel N° 20", 3600, 10, 40],
-    ["PI-004", "Rodillo antigota 22 cm", 7400, 6, 20],
-    ["PI-005", "Lija al agua grano 120", 650, 30, 150],
-    ["PI-006", "Diluyente aguarrás 1 L", 6200, 5, 4],
-  ],
-  "Tornillería": [
-    ["TO-001", "Tornillo autoperforante 8x1\" (x100)", 4500, 10, 50],
-    ["TO-002", "Tarugo Fischer N° 8 (x50)", 2900, 10, 60],
-    ["TO-003", "Clavo punta París 2\" (1 kg)", 5200, 8, 30],
-    ["TO-004", "Bulón con tuerca 1/4 x 2\" (x10)", 3100, 8, 25],
-    ["TO-005", "Arandela plana 1/4\" (x50)", 1600, 10, 45],
-    ["TO-006", "Tornillo para madera 6x1 1/2\" (x100)", 3800, 10, 7],
+  "Pinturas y terminaciones": [
+    ["PT-001", "Látex interior blanco 20 L", 112000, 3, 12],
+    ["PT-002", "Impermeabilizante para techos 20 kg", 98000, 2, 5],
+    ["PT-003", "Rodillo de lana 22 cm", 9800, 6, 20],
+    ["PT-004", "Pincel N° 25", 4300, 10, 35],
+    ["PT-005", "Enduido plástico interior 4 L", 15400, 4, 3],
+    ["PT-006", "Cinta de papel 48 mm x 50 m", 3900, 12, 50],
   ],
 };
 
 const CLIENTES = [
-  { tipoDoc: "DNI", nroDoc: "28456123", nombre: "Mariana López", domicilio: "Las Heras 455", telefono: "381 455-2210", email: "mariana.lopez@correo.test", cuentaCorriente: true, limiteCredito: 40000000 },
-  { tipoDoc: "CUIT", nroDoc: "30712345671", nombre: "Constructora Del Norte S.A.", domicilio: "Av. Belgrano 2100", telefono: "381 430-1188", email: "compras@delnorte.test", cuentaCorriente: true, limiteCredito: 150000000 },
-  { tipoDoc: "DNI", nroDoc: "33120987", nombre: "Jorge Medina", domicilio: "San Martín 870", telefono: "381 512-3344", cuentaCorriente: true, limiteCredito: 15000000 },
-  { tipoDoc: "DNI", nroDoc: "25987654", nombre: "Silvia Paz", domicilio: "Congreso 230", telefono: "381 467-9012", email: "silvia.paz@correo.test", cuentaCorriente: true },
-  { tipoDoc: "CUIT", nroDoc: "20301234565", nombre: "Ricardo Gómez (Plomero)", domicilio: "Junín 1450", telefono: "381 598-7766", cuentaCorriente: true, limiteCredito: 25000000 },
-  { tipoDoc: "DNI", nroDoc: "40555111", nombre: "Lucía Fernández", domicilio: "Córdoba 640", telefono: "381 600-1122", cuentaCorriente: true, limiteCredito: 8000000 },
-  { tipoDoc: "DNI", nroDoc: "31444777", nombre: "Diego Romero", telefono: "381 455-8899", cuentaCorriente: false },
-  { tipoDoc: "DNI", nroDoc: "36222333", nombre: "Valeria Castro", email: "valeria.castro@correo.test", cuentaCorriente: false },
-  { tipoDoc: "DNI", nroDoc: "29888444", nombre: "Hernán Ibáñez", domicilio: "Maipú 310", cuentaCorriente: false },
-  { tipoDoc: "CUIT", nroDoc: "27350001112", nombre: "Carolina Ruiz Diseño", domicilio: "24 de Septiembre 980", telefono: "381 421-5566", cuentaCorriente: false },
+  { tipoDoc: "DNI", nroDoc: "27654321", nombre: "Gustavo Paredes", domicilio: "Santiago del Estero 1220", telefono: "381 452-3301", email: "gustavo.paredes@correo.test", cuentaCorriente: true, limiteCredito: 80000000 },
+  { tipoDoc: "CUIT", nroDoc: "30715558884", nombre: "Obras Tucumán S.R.L.", domicilio: "Av. Sarmiento 780", telefono: "381 431-9090", email: "compras@obrastucuman.test", cuentaCorriente: true, limiteCredito: 500000000 },
+  { tipoDoc: "DNI", nroDoc: "33987654", nombre: "Natalia Quiroga", domicilio: "Crisóstomo Álvarez 560", telefono: "381 509-4412", cuentaCorriente: true, limiteCredito: 40000000 },
+  { tipoDoc: "DNI", nroDoc: "25123456", nombre: "Raúl Medina (albañil)", domicilio: "Av. Roca 2100", telefono: "381 466-1834", cuentaCorriente: true },
+  { tipoDoc: "CUIT", nroDoc: "20294567891", nombre: "Electro Instalaciones Ibarra", domicilio: "Lamadrid 930", telefono: "381 597-2210", email: "ibarra.instalaciones@correo.test", cuentaCorriente: true, limiteCredito: 150000000 },
+  { tipoDoc: "DNI", nroDoc: "40111222", nombre: "Florencia Díaz", domicilio: "Monteagudo 415", telefono: "381 612-7788", cuentaCorriente: true, limiteCredito: 25000000 },
+  { tipoDoc: "DNI", nroDoc: "31222333", nombre: "Sebastián Acosta", telefono: "381 455-6021", cuentaCorriente: false },
+  { tipoDoc: "DNI", nroDoc: "37444555", nombre: "Camila Rojas", email: "camila.rojas@correo.test", cuentaCorriente: false },
+  { tipoDoc: "DNI", nroDoc: "29555666", nombre: "Héctor Villalba", domicilio: "Junín 1480", cuentaCorriente: false },
+  { tipoDoc: "CUIT", nroDoc: "27368889990", nombre: "Estudio de Arquitectura Molina", domicilio: "25 de Mayo 620", telefono: "381 421-8844", cuentaCorriente: false },
 ];

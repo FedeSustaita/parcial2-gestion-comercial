@@ -4,8 +4,8 @@
 // El modo demo se puede apagar con la variable de entorno DEMO_LOGIN=false.
 
 export const USUARIOS_DEMO = {
-  admin: { nombre: "Laura Méndez", email: "admin@comercio.test", password: "admin1234" },
-  vendedor: { nombre: "Pablo Ruiz", email: "vendedor@comercio.test", password: "vendedor1234" },
+  admin: { nombre: "Martín Ríos", email: "admin@comercio.test", password: "admin1234" },
+  vendedor: { nombre: "Carla Benítez", email: "vendedor@comercio.test", password: "vendedor1234" },
 } as const;
 
 export function demoHabilitado(): boolean {

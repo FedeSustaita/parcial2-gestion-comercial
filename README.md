@@ -1,6 +1,6 @@
-# Sistema de gestión comercial — Ferretería El Tornillo
+# Sistema de gestión comercial — Mundo Construcción
 
-2º parcial de Programación IV (UTN FRT). Sistema web para un comercio minorista de un solo local: **factura ventas**, **controla las existencias** del catálogo y lleva la **cuenta corriente de los clientes**, con usuarios administrador y vendedor.
+2º parcial de Programación IV (UTN FRT). Sistema web para **Mundo Construcción**, un comercio de materiales para la construcción y el hogar de un solo local: **factura ventas**, **controla las existencias** del catálogo y lleva la **cuenta corriente de los clientes**, con usuarios administrador y vendedor.
 
 **Sitio publicado:** https://parcial2-gestion-comercial.vercel.app
 **Repositorio:** https://github.com/FedeSustaita/parcial2-gestion-comercial
@@ -121,7 +121,7 @@ Puntos clave:
 
 ## Datos de prueba
 
-El script `db/seed.ts` crea, **con los mismos servicios de la aplicación**: 2 usuarios (uno por rol), 5 categorías, 30 productos de ferretería con stock inicial, 10 clientes (6 con cuenta corriente), **50 facturas** repartidas en los últimos 30 días, 5 pagos con recibo y 1 anulación.
+El script `db/seed.ts` crea, **con los mismos servicios de la aplicación**: 2 usuarios (uno por rol), 5 categorías, 30 productos de construcción y hogar (materiales, herramientas, electricidad, sanitarios, pinturas) con stock inicial, 10 clientes (6 con cuenta corriente), **50 facturas** repartidas en los últimos 30 días, pagos con recibo y 1 anulación.
 
 ## Uso de inteligencia artificial
 
