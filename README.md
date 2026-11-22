@@ -40,6 +40,8 @@ TypeScript · Next.js (App Router, Route Handlers) · Tailwind CSS · shadcn/ui 
 | Administrador | admin@comercio.test | admin1234 |
 | Vendedor | vendedor@comercio.test | vendedor1234 |
 
+**Modo demo:** la pantalla de login tiene dos botones, *Administrador* y *Vendedor*, que entran con estos usuarios sin escribir credenciales. Se puede desactivar con la variable de entorno `DEMO_LOGIN=false`.
+
 ## Scripts
 
 | Script | Qué hace |

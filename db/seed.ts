@@ -7,6 +7,7 @@ import { saldoCliente } from "../services/cuenta";
 import { anularFactura, crearFactura } from "../services/facturas";
 import { registrarPago } from "../services/pagos";
 import { ApiError } from "../lib/api-error";
+import { USUARIOS_DEMO } from "../lib/demo";
 import { crearProducto } from "../services/productos";
 import { crearPrimerAdmin, crearUsuario } from "../services/usuarios";
 
@@ -27,19 +28,10 @@ async function main() {
   }
 
   // RF-U3: el primer administrador lo crea este script.
-  const admin = await crearPrimerAdmin({
-    nombre: "Laura Méndez",
-    email: "admin@comercio.test",
-    password: "admin1234",
-  });
+  const admin = await crearPrimerAdmin(USUARIOS_DEMO.admin);
   const actor: UsuarioSesion = { id: admin.id, nombre: admin.nombre, email: admin.email, rol: "admin" };
 
-  await crearUsuario(actor, {
-    nombre: "Pablo Ruiz",
-    email: "vendedor@comercio.test",
-    rol: "vendedor",
-    password: "vendedor1234",
-  });
+  await crearUsuario(actor, { ...USUARIOS_DEMO.vendedor, rol: "vendedor" });
   console.log("✓ 2 usuarios");
 
   // 5 categorías y 30 productos. El stock inicial entra como movimiento de

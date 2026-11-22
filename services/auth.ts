@@ -2,7 +2,8 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { usuarios, type Rol } from "@/db/schema";
-import { ApiError } from "@/lib/api-error";
+import { ApiError, errores } from "@/lib/api-error";
+import { demoHabilitado, USUARIOS_DEMO } from "@/lib/demo";
 import { validar } from "@/lib/validacion";
 import { cambiarPasswordSchema, loginSchema } from "@/schemas/auth";
 
@@ -33,6 +34,21 @@ export async function login(datos: unknown): Promise<UsuarioSesion> {
   const ok = u ? await bcrypt.compare(password, u.passwordHash) : false;
   if (!u || !ok || !u.activo) {
     throw new ApiError(401, "CREDENCIALES_INVALIDAS", "Email o contraseña incorrectos.");
+  }
+  return aSesion(u);
+}
+
+/**
+ * Modo demo: inicia sesión como el usuario de prueba del rol elegido, sin
+ * contraseña. Usa los mismos usuarios del seed y respeta las mismas reglas:
+ * si ese usuario fue desactivado, no entra. Se apaga con DEMO_LOGIN=false.
+ */
+export async function loginDemo(rol: unknown): Promise<UsuarioSesion> {
+  if (!demoHabilitado()) throw errores.sinPermiso();
+  if (rol !== "admin" && rol !== "vendedor") throw errores.validacion([{ campo: "rol", mensaje: "Rol inválido." }]);
+  const u = await db.query.usuarios.findFirst({ where: eq(usuarios.email, USUARIOS_DEMO[rol].email) });
+  if (!u || !u.activo || u.rol !== rol) {
+    throw new ApiError(401, "CREDENCIALES_INVALIDAS", "El usuario de prueba no está disponible.");
   }
   return aSesion(u);
 }
