@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db, transaccion } from "@/db";
-import { clientes, movimientosCuenta, pagos } from "@/db/schema";
+import { clientes, MEDIOS_PAGO, movimientosCuenta, pagos } from "@/db/schema";
 import { ApiError, errores } from "@/lib/api-error";
 import { formatearDocumento, formatearNumeroRecibo } from "@/lib/format";
 import { validar } from "@/lib/validacion";
@@ -17,7 +17,7 @@ export type ReciboPublico = {
   fecha: string;
   cliente: { id: number; nombre: string; tipoDoc: string; nroDoc: string; domicilio: string | null };
   importe: number;
-  medio: "efectivo" | "transferencia" | "tarjeta_debito";
+  medio: (typeof MEDIOS_PAGO)[number]; // se deriva de db/schema.ts: agregar un medio es un solo cambio
   observacion: string | null;
   usuario: { id: number; nombre: string };
   saldoCliente: number; // saldo después de este pago
