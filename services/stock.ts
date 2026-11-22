@@ -1,5 +1,5 @@
 import { and, count, desc, eq, gte, lt, sql, type SQL } from "drizzle-orm";
-import { db, type DBoTx } from "@/db";
+import { db, transaccion, type DBoTx } from "@/db";
 import { movimientosStock, productos, TIPOS_MOV_STOCK } from "@/db/schema";
 import { ApiError, errores } from "@/lib/api-error";
 import { finDiaAR, inicioDiaAR } from "@/lib/fechas";
@@ -104,7 +104,7 @@ export async function registrarMovimientoManual(
   exigirRol(usuario, "admin");
   const id = Number(productoId);
 
-  const movimientoId = await db.transaction(async (tx) => {
+  const movimientoId = await transaccion(async (tx) => {
     const p = await tx.query.productos.findFirst({ where: eq(productos.id, id) });
     if (!p) throw errores.noEncontrado("El producto");
     const r = await moverStock(tx, {

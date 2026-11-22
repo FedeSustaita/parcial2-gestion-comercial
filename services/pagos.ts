@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import { db, transaccion } from "@/db";
 import { clientes, movimientosCuenta, pagos } from "@/db/schema";
 import { ApiError, errores } from "@/lib/api-error";
 import { formatearDocumento, formatearNumeroRecibo } from "@/lib/format";
@@ -38,7 +38,7 @@ export async function registrarPago(
   const d = validar(registrarPagoSchema, datos);
   const id = Number(clienteId);
 
-  const pagoId = await db.transaction(async (tx) => {
+  const pagoId = await transaccion(async (tx) => {
     const c = await tx.query.clientes.findFirst({ where: eq(clientes.id, id) });
     if (!c) throw errores.noEncontrado("El cliente");
     if (!c.cuentaCorriente) {

@@ -154,3 +154,8 @@ function generarPasswordTemporal(): string {
   const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   return Array.from({ length: 10 }, () => chars[randomInt(chars.length)]).join("");
 }
+
+/** Lista mínima (id y nombre) para filtrar facturas por vendedor. Ambos roles. */
+export async function listarVendedores(_usuario: UsuarioSesion): Promise<{ id: number; nombre: string }[]> {
+  return db.select({ id: usuarios.id, nombre: usuarios.nombre }).from(usuarios).orderBy(asc(usuarios.nombre));
+}

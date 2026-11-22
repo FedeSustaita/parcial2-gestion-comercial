@@ -1,5 +1,5 @@
 import { and, asc, count, eq, like, lt, or, type SQL } from "drizzle-orm";
-import { db } from "@/db";
+import { db, transaccion } from "@/db";
 import { categorias, productos } from "@/db/schema";
 import { ApiError, errores } from "@/lib/api-error";
 import { validar } from "@/lib/validacion";
@@ -126,7 +126,7 @@ export async function crearProducto(usuario: UsuarioSesion, datos: unknown): Pro
   if (await codigoEnUso(d.codigo)) throw codigoDuplicado();
   await validarCategoria(d.categoriaId);
 
-  const id = await db.transaction(async (tx) => {
+  const id = await transaccion(async (tx) => {
     const [p] = await tx
       .insert(productos)
       .values({
