@@ -15,12 +15,13 @@
 
 ## Usuarios de prueba
 
-| Rol | Email | Contraseña |
-| --- | --- | --- |
-| Administrador | admin@comercio.test | admin1234 |
-| Vendedor | vendedor@comercio.test | vendedor1234 |
+| Rol | Usuario | Email | Contraseña |
+| --- | --- | --- | --- |
+| Administrador | Federico Sustaita Fuentes | admin@comercio.test | admin1234 |
+| Vendedor | Axel Torres | vendedor@comercio.test | vendedor1234 |
+| Vendedor | Leonardo Argañaráz | vendedor2@comercio.test | vendedor1234 |
 
-**Modo demo:** la pantalla de login tiene dos botones, *Administrador* y *Vendedor*, que entran con estos usuarios sin escribir credenciales. Se puede desactivar con la variable de entorno `DEMO_LOGIN=false`.
+**Modo demo:** la pantalla de login tiene dos botones, *Administrador* y *Vendedor*, que entran como Federico (administrador) o Axel (vendedor) sin escribir credenciales. Se puede desactivar con la variable de entorno `DEMO_LOGIN=false`.
 
 ## Qué hace
 
@@ -121,7 +122,7 @@ Puntos clave:
 
 ## Datos de prueba
 
-El script `db/seed.ts` crea, **con los mismos servicios de la aplicación**: 2 usuarios (uno por rol), 5 categorías, 30 productos de construcción y hogar (materiales, herramientas, electricidad, sanitarios, pinturas) con stock inicial, 10 clientes (6 con cuenta corriente), **50 facturas** repartidas en los últimos 30 días, pagos con recibo y 1 anulación.
+El script `db/seed.ts` crea, **con los mismos servicios de la aplicación**: 3 usuarios (un administrador y dos vendedores), 5 categorías, 30 productos de construcción y hogar (materiales, herramientas, electricidad, sanitarios, pinturas) con stock inicial, 10 clientes (6 con cuenta corriente), **50 facturas** repartidas en los últimos 30 días, pagos con recibo y 1 anulación.
 
 ## Uso de inteligencia artificial
 

@@ -7,7 +7,7 @@ import { saldoCliente } from "../services/cuenta";
 import { anularFactura, crearFactura } from "../services/facturas";
 import { registrarPago } from "../services/pagos";
 import { ApiError } from "../lib/api-error";
-import { USUARIOS_DEMO } from "../lib/demo";
+import { OTROS_USUARIOS, USUARIOS_DEMO } from "../lib/demo";
 import { crearProducto } from "../services/productos";
 import { crearPrimerAdmin, crearUsuario } from "../services/usuarios";
 
@@ -16,8 +16,9 @@ import { crearPrimerAdmin, crearUsuario } from "../services/usuarios";
 // reglas de negocio y el script sirve además como prueba de los servicios.
 //
 // Usuarios de prueba (ver README):
-//   admin@comercio.test    / admin1234     (Administrador)
-//   vendedor@comercio.test / vendedor1234  (Vendedor)
+//   admin@comercio.test     / admin1234     Federico Sustaita Fuentes (Administrador)
+//   vendedor@comercio.test  / vendedor1234  Axel Torres (Vendedor)
+//   vendedor2@comercio.test / vendedor1234  Leonardo Argañaráz (Vendedor)
 
 async function main() {
   const existentes = await db.query.usuarios.findFirst();
@@ -31,8 +32,9 @@ async function main() {
   const admin = await crearPrimerAdmin(USUARIOS_DEMO.admin);
   const actor: UsuarioSesion = { id: admin.id, nombre: admin.nombre, email: admin.email, rol: "admin" };
 
-  await crearUsuario(actor, { ...USUARIOS_DEMO.vendedor, rol: "vendedor" });
-  console.log("✓ 2 usuarios");
+  const vendedores = [await crearUsuario(actor, { ...USUARIOS_DEMO.vendedor, rol: "vendedor" })];
+  for (const u of OTROS_USUARIOS) vendedores.push(await crearUsuario(actor, u));
+  console.log(`✓ ${1 + vendedores.length} usuarios`);
 
   // 5 categorías y 30 productos. El stock inicial entra como movimiento de
   // ingreso "Stock inicial" (crearProducto llama a moverStock).
@@ -65,7 +67,7 @@ async function main() {
   // servicio que usa la pantalla de Nueva venta), en orden cronológico para
   // que la numeración siga a las fechas. Si una combinación no pasa una regla
   // (sin stock, límite de crédito), se prueba otra: el servicio decide.
-  const usuarios = [actor, { id: 2, nombre: USUARIOS_DEMO.vendedor.nombre, email: USUARIOS_DEMO.vendedor.email, rol: "vendedor" as const }];
+  const usuarios: UsuarioSesion[] = [actor, ...vendedores.map((v) => ({ id: v.id, nombre: v.nombre, email: v.email, rol: v.rol }))];
   const conCC = clientes.filter((c) => c.cuentaCorriente);
   const productosIds = Array.from({ length: n }, (_, i) => i + 1);
   const azar = generador(20261122);
