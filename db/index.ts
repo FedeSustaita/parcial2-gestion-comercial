@@ -1,11 +1,23 @@
-import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
 // Conexión única a la base. La misma variable DATABASE_URL decide si es
 // el archivo SQLite local (file:local.db) o la base de Turso (libsql://...).
+const url = process.env.DATABASE_URL ?? "file:local.db";
+
+// - Archivo local: cliente de Node (usa el binario nativo de SQLite).
+// - Turso: cliente "web", que habla por HTTP y no carga código nativo; así
+//   funciona igual en las funciones serverless de Vercel.
+type Libsql = typeof import("@libsql/client");
+const { createClient }: Libsql = url.startsWith("file:")
+  ? // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("@libsql/client")
+  : // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("@libsql/client/web");
+
+
 const client = createClient({
-  url: process.env.DATABASE_URL ?? "file:local.db",
+  url,
   authToken: process.env.DATABASE_AUTH_TOKEN || undefined,
 });
 

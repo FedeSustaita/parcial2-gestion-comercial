@@ -7,7 +7,7 @@ import { COOKIE_SESION, verificarSesion } from "@/lib/session";
 // servicio verifica el rol.
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const esPublica = pathname === "/login" || pathname === "/api/auth/login";
+  const esPublica = pathname === "/login" || pathname === "/api/auth/login" || pathname === "/api/salud";
   const valida = (await verificarSesion(req.cookies.get(COOKIE_SESION)?.value)) !== null;
 
   if (esPublica) {
