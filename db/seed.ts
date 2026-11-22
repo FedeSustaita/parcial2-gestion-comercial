@@ -3,6 +3,10 @@ import { db } from "./index";
 import type { UsuarioSesion } from "../services/auth";
 import { crearCategoria } from "../services/categorias";
 import { crearCliente } from "../services/clientes";
+import { saldoCliente } from "../services/cuenta";
+import { anularFactura, crearFactura } from "../services/facturas";
+import { registrarPago } from "../services/pagos";
+import { ApiError } from "../lib/api-error";
 import { crearProducto } from "../services/productos";
 import { crearPrimerAdmin, crearUsuario } from "../services/usuarios";
 
@@ -61,10 +65,72 @@ async function main() {
   console.log(`✓ ${Object.keys(CATALOGO).length} categorías, ${n} productos`);
 
   // 10 clientes: 6 con cuenta corriente (algunos con límite de crédito).
-  for (const c of CLIENTES) await crearCliente(actor, c);
-  console.log(`✓ ${CLIENTES.length} clientes`);
+  const clientes = [];
+  for (const c of CLIENTES) clientes.push(await crearCliente(actor, c));
+  console.log(`✓ ${clientes.length} clientes`);
 
-  // Etapa 5: 50 facturas en los últimos 30 días y pagos.
+  // 50 facturas en los últimos 30 días, creadas con crearFactura() (el mismo
+  // servicio que usa la pantalla de Nueva venta), en orden cronológico para
+  // que la numeración siga a las fechas. Si una combinación no pasa una regla
+  // (sin stock, límite de crédito), se prueba otra: el servicio decide.
+  const usuarios = [actor, { id: 2, nombre: "Pablo Ruiz", email: "vendedor@comercio.test", rol: "vendedor" as const }];
+  const conCC = clientes.filter((c) => c.cuentaCorriente);
+  const productosIds = Array.from({ length: n }, (_, i) => i + 1);
+  const azar = generador(20261122);
+  const ahora = Date.now();
+  const fechas = Array.from({ length: 50 }, (_, i) => {
+    const diasAtras = Math.floor((49 - i) * 30 / 50); // de hace 29 días a hoy
+    const hora = 9 + Math.floor(azar() * 11);
+    const d = new Date(ahora - diasAtras * 86400000);
+    d.setUTCHours(hora + 3, Math.floor(azar() * 60), 0, 0); // hora de Argentina (UTC−3)
+    return new Date(Math.min(d.getTime(), ahora - (50 - i) * 60000));
+  }).sort((a, b) => a.getTime() - b.getTime());
+
+  const emitidas: { id: number; forma: string }[] = [];
+  for (const fecha of fechas) {
+    for (let intento = 0; intento < 20; intento++) {
+      const r = azar();
+      const forma = r < 0.5 ? "contado" : r < 0.8 ? "tarjeta" : "cuenta_corriente";
+      const cliente = forma === "cuenta_corriente" ? elegir(azar, conCC) : azar() < 0.35 ? elegir(azar, clientes) : null;
+      const cantidadItems = 1 + Math.floor(azar() * 3);
+      const ids = new Set<number>();
+      while (ids.size < cantidadItems) ids.add(elegir(azar, productosIds));
+      const items = [...ids].map((productoId) => ({ productoId, cantidad: 1 + Math.floor(azar() * 3) }));
+      const pago =
+        forma === "contado"
+          ? { forma, montoRecibido: undefined }
+          : forma === "tarjeta"
+            ? { forma, tarjeta: { tipo: azar() < 0.5 ? "debito" : "credito", marca: elegir(azar, ["Visa", "Mastercard", "Cabal"]), ultimos4: String(1000 + Math.floor(azar() * 9000)) } }
+            : { forma };
+      try {
+        const f = await crearFactura(elegir(azar, usuarios), { clienteId: cliente?.id ?? null, items, pago }, { fecha });
+        emitidas.push({ id: f.id, forma });
+        break;
+      } catch (e) {
+        if (!(e instanceof ApiError)) throw e; // un error inesperado sí corta el seed
+      }
+    }
+  }
+  console.log(`✓ ${emitidas.length} facturas`);
+
+  // Pagos con recibo: cada cliente con deuda paga una parte unos días después.
+  let pagos = 0;
+  for (const c of conCC) {
+    const saldo = await saldoCliente(db, c.id);
+    if (saldo <= 0 || azar() < 0.25) continue;
+    const importe = Math.max(100, Math.round((saldo * (0.3 + azar() * 0.5)) / 100) * 100);
+    const fecha = new Date(ahora - Math.floor(azar() * 4 + 1) * 86400000 / 3);
+    await registrarPago(actor, c.id, { importe, medio: elegir(azar, ["efectivo", "transferencia", "tarjeta_debito"]), observacion: "Pago a cuenta" }, { fecha });
+    pagos++;
+  }
+  console.log(`✓ ${pagos} pagos`);
+
+  // Una anulación (con el servicio: reingresa stock y, si corresponde, acredita).
+  const aAnular = emitidas[emitidas.length - 8];
+  if (aAnular) {
+    await anularFactura(actor, aAnular.id, { motivo: "Error en la carga de cantidades" });
+    console.log("✓ 1 factura anulada");
+  }
   console.log("Seed completo.");
 }
 
@@ -72,6 +138,20 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+
+// Números pseudoaleatorios con semilla fija: el seed da siempre los mismos datos.
+function generador(semilla: number) {
+  let a = semilla;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function elegir<T>(azar: () => number, lista: T[]): T {
+  return lista[Math.floor(azar() * lista.length)];
+}
 
 // [código, descripción, precio en pesos, stock mínimo, stock inicial]
 type ItemSeed = [string, string, number, number, number];
